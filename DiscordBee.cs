@@ -9,6 +9,7 @@ namespace MusicBeePlugin
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.IO;
+  using System.Net;
   using System.Reflection;
   using System.Text;
   using System.Text.RegularExpressions;
@@ -292,7 +293,10 @@ namespace MusicBeePlugin
       {
         var uri = _layoutHandler.RenderUrl(_settings.ButtonUrl, metaDataDict, '\\');
         Debug.WriteLine($"Url: {uri}");
-
+        if (metaDataDict["Comment"].Length == 0){
+          var encoded = WebUtility.UrlEncode(metaDataDict["Artist"] + " - " + metaDataDict["TrackTitle"]);
+          uri = $"https://www.youtube.com/results?search_query={encoded}";
+        }
         // Validate the URL again.
         if (ValidationHelpers.ValidateUri(uri))
         {
